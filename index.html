@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Amir Naderi — Software Engineering</title>
+<link rel="icon" href="assets/favicon.svg" />
+<script>(function(){try{var t=localStorage.getItem('th-slate')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* ---------- design tokens ---------- */
+  :root{
+    --bg:#f4f5f8; --card:#ffffff; --ink:#15171c; --soft:#41444d;
+    --muted:#7d8089; --rule:#e2e4ea; --rule-2:#cfd2da;
+    --accent:#2e3e6e; --accent-ink:#1f2c5a; --accent-soft:#e6e9f4; --on-accent:#fff;
+    --shadow:0 1px 2px rgba(20,25,40,.05),0 16px 36px -20px rgba(30,40,80,.22);
+    --sans:"Inter",system-ui,-apple-system,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+    /* hero metrics — referenced from .cta, .soc a, and the photo-container shift,
+       so changing either value here keeps the three places in sync. */
+    --soc-h:38px;
+    --cta-mb:1.6rem;
+  }
+  html[data-theme="dark"]{
+    --bg:#0c0e14; --card:#161924; --ink:#e8eaf1; --soft:#b5b8c4;
+    --muted:#7d8090; --rule:#222633; --rule-2:#2d3142;
+    --accent:#8aa0e0; --accent-ink:#a7b8e9; --accent-soft:#1c2237; --on-accent:#0c0e14;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 20px 44px -24px rgba(0,0,0,.7);
+  }
+
+  /* ---------- reset + page chrome ---------- */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;scroll-padding-top:88px;}
+  body{
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(ellipse 900px 600px at 0% 0%,var(--accent-soft),transparent 55%),
+      radial-gradient(ellipse 700px 500px at 100% 35%,var(--accent-soft),transparent 60%),
+      radial-gradient(ellipse 700px 500px at 30% 100%,var(--accent-soft),transparent 60%);
+    background-attachment:fixed;
+    overflow-x:clip;
+    color:var(--ink);font-family:var(--sans);
+    font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased;
+    transition:background .3s,color .3s;
+    hyphens:auto;-webkit-hyphens:auto;word-break:auto-phrase;
+  }
+  ::selection{background:var(--accent);color:var(--on-accent);}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:980px;margin:0 auto;padding:0 1.5rem;}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb,var(--bg) 86%,transparent);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid transparent;transition:border-color .3s;
+  }
+  nav.on{border-bottom-color:var(--rule);}
+  .ni{max-width:980px;margin:0 auto;padding:.85rem 1.5rem;display:flex;align-items:center;gap:1rem;}
+  .brand{font-weight:600;font-size:1.1rem;letter-spacing:-.02em;color:var(--ink);transition:color .2s;}
+  .brand:hover{color:var(--accent);}
+  .brand .dot{color:var(--accent);}
+  .nl{margin-left:auto;display:flex;gap:1.6rem;}
+  .nl a{font-size:.9rem;color:var(--muted);transition:color .2s;}
+  .nl a:hover,.nl a.on{color:var(--ink);}
+  .tg{
+    width:36px;height:36px;border-radius:8px;
+    border:1px solid var(--rule-2);background:var(--card);color:var(--ink);
+    cursor:pointer;display:grid;place-items:center;font-size:.9rem;
+    transition:border-color .2s;
+  }
+  .tg:hover{border-color:var(--accent);}
+  html[data-theme="dark"] .tg .s{display:none;}
+  html[data-theme="light"] .tg .m{display:none;}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;z-index:0;
+    padding:clamp(3rem,8vw,5.5rem) 0 clamp(2rem,5vw,3.5rem);
+    min-height:calc(100svh - 76px);
+    display:flex;align-items:center;
+  }
+  .hero::before{
+    content:"";position:absolute;
+    top:6%;right:-12px;width:220px;height:160px;
+    background-image:radial-gradient(circle,var(--rule-2) 1.2px,transparent 1.2px);
+    background-size:14px 14px;
+    pointer-events:none;z-index:-1;
+    -webkit-mask-image:radial-gradient(ellipse at 65% 40%,black 22%,transparent 78%);
+            mask-image:radial-gradient(ellipse at 65% 40%,black 22%,transparent 78%);
+  }
+  .hero::after{
+    content:"";position:absolute;
+    bottom:8%;left:-12px;width:190px;height:140px;
+    background-image:radial-gradient(circle,var(--rule-2) 1.2px,transparent 1.2px);
+    background-size:14px 14px;
+    pointer-events:none;z-index:-1;
+    -webkit-mask-image:radial-gradient(ellipse at 35% 60%,black 22%,transparent 78%);
+            mask-image:radial-gradient(ellipse at 35% 60%,black 22%,transparent 78%);
+  }
+  .hero-content{
+    width:100%;
+    display:grid;grid-template-columns:1.5fr 1fr;gap:3rem;
+    align-items:stretch;
+  }
+
+  /* ---------- hero text ---------- */
+  .kicker{
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:1.6rem;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem,6vw,3.6rem);font-weight:700;letter-spacing:-.03em;
+    line-height:1.06;margin-bottom:.55rem;
+  }
+  .hero .desc{
+    color:var(--muted);font-size:.98rem;margin-bottom:1.8rem;max-width:32rem;
+    text-align:justify;
+  }
+  .cta{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:var(--cta-mb);}
+  .btn{
+    display:inline-flex;align-items:center;gap:.4rem;
+    font-size:.92rem;font-weight:500;padding:.75rem 1.4rem;border-radius:8px;
+    transition:transform .15s,background .2s,border-color .2s,color .2s;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn--p{background:var(--accent);color:var(--on-accent);}
+  .btn--p:hover{background:var(--accent-ink);}
+  .btn--g{border:1px solid var(--rule-2);color:var(--ink);}
+  .btn--g:hover{border-color:var(--accent);color:var(--accent);}
+  .soc{display:flex;gap:.6rem;}
+  .soc a{
+    width:var(--soc-h);height:var(--soc-h);border-radius:8px;
+    border:1px solid var(--rule);background:var(--card);
+    display:grid;place-items:center;color:var(--muted);
+    transition:color .2s,border-color .2s,transform .15s;
+  }
+  .soc a:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-2px);}
+  .soc svg{
+    width:17px;height:17px;fill:none;stroke:currentColor;
+    stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+  }
+
+  /* ---------- hero portrait (frame-breakout) ----------
+     .photo-container stretches with the grid row to match the left block's
+     height. .photo has its own fixed aspect-ratio (independent of row height),
+     so the image crop is stable from mobile through tablet to desktop. */
+  .photo-container{
+    position:relative;
+    /* Shift up so the frame ends at the bottom of .cta instead of below the
+       socials. The shift = height of .soc + .cta's margin-bottom (= the
+       visual space the socials block occupies under the CTA). */
+    bottom:calc(var(--soc-h) + var(--cta-mb));
+  }
+  /* .photo fills the container fully — so its height tracks the left block
+     (via the grid row stretch). The crop point of the figure shifts slightly
+     between viewports as the text reflows, but the frame stays aligned with
+     the buttons/socials at the bottom of the left column. */
+  .photo{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+  }
+  /* Frame border BEHIND the image (paints before img in DOM order). The image
+     covers it in the middle of the top edge — that's the breakout effect:
+     the head visually "punches through" the top of the frame. */
+  .photo::before{
+    content:"";
+    position:absolute;
+    inset:auto 0 0 0;
+    height:70%;
+    border:3px solid var(--muted);
+    border-radius:16px;
+    box-sizing:border-box;
+    pointer-events:none;
+  }
+  /* Image is 90% width (centered) so the frame's side borders stay visible.
+     bottom:3px lifts it just enough to reveal the frame's bottom border
+     beneath, so the figure reads as "behind the frame at the bottom,
+     in front of it at the top". */
+  .photo img{
+    display:block;
+    position:relative;
+    width:75%;height:100%;
+    margin:0 auto;
+    object-fit:cover;object-position:top center;
+    bottom:3px;
+  }
+  /* Theme-aware portrait. Higher specificity than .photo img so the swap wins. */
+  .photo .photo-dark{display:none;}
+  html[data-theme="dark"] .photo .photo-light{display:none;}
+  html[data-theme="dark"] .photo .photo-dark{display:block;}
+
+  /* ---------- section headings ---------- */
+  section{padding:clamp(2.5rem,6vw,4rem) 0;}
+  .sh{display:flex;align-items:baseline;gap:.8rem;margin-bottom:1.8rem;}
+  .sh i{font-family:var(--mono);font-size:.78rem;color:var(--accent);font-style:normal;letter-spacing:.04em;}
+  .sh h2{font-size:1.55rem;font-weight:700;letter-spacing:-.02em;}
+  .sh .ln{flex:1;height:1px;background:var(--rule);}
+
+  /* ---------- about ---------- */
+  .about{font-size:1.05rem;color:var(--soft);max-width:42rem;}
+  .about p{margin-bottom:.9rem;text-align:justify;}
+  .about p:last-child{margin-bottom:0;}
+
+  /* ---------- experience timeline ---------- */
+  .tl{
+    position:relative;
+    padding:1.1rem 0 1.1rem 1.6rem;
+    border-left:2px solid var(--rule);transition:border-color .2s;
+  }
+  .tl:hover{border-left-color:var(--accent);}
+  .tl::before{
+    content:"";position:absolute;
+    left:-7px;top:1.7rem;width:12px;height:12px;
+    border-radius:50%;background:var(--card);border:2px solid var(--accent);
+  }
+  .tl__top{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;flex-wrap:wrap;}
+  .tl__role{font-weight:600;font-size:1.08rem;}
+  .tl__org{color:var(--accent);font-weight:500;}
+  .tl__date{font-family:var(--mono);font-size:.75rem;color:var(--muted);white-space:nowrap;}
+  .tl__dom{font-size:.82rem;color:var(--muted);margin:.12rem 0 .6rem;}
+  .tl p{color:var(--soft);font-size:.95rem;text-align:justify;}
+
+  .earlier{margin-top:1.7rem;display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;}
+  .echip{
+    background:var(--card);border:1px solid var(--rule);border-radius:8px;
+    padding:.9rem 1.1rem;transition:border-color .2s;
+  }
+  .echip:hover{border-color:var(--rule-2);}
+  .echip .r{font-weight:500;font-size:.93rem;}
+  .echip .m{font-family:var(--mono);font-size:.72rem;color:var(--muted);margin-top:.2rem;}
+
+  /* ---------- education ---------- */
+  .edu{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+  .ed{
+    background:var(--card);border:1px solid var(--rule);border-radius:10px;
+    padding:1.5rem 1.7rem;border-top:3px solid var(--accent);box-shadow:var(--shadow);
+  }
+  .ed .d{font-family:var(--mono);font-size:.74rem;color:var(--muted);}
+  .ed h3{font-size:1.06rem;font-weight:600;margin:.4rem 0 .15rem;}
+  .ed .s{color:var(--accent);font-size:.88rem;}
+  .ed .n{color:var(--soft);font-size:.88rem;margin-top:.5rem;text-align:justify;}
+
+  /* ---------- selected work ---------- */
+  .work{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+  .wk{
+    background:var(--card);border:1px solid var(--rule);border-radius:10px;
+    padding:1.5rem 1.7rem;border-top:3px solid var(--accent);box-shadow:var(--shadow);
+    transition:transform .18s,border-color .2s;
+  }
+  .wk:hover{transform:translateY(-3px);border-color:var(--rule-2);}
+  .wk__type{font-family:var(--mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+  .wk__name{
+    font-size:1.1rem;font-weight:700;margin:.4rem 0 .15rem;letter-spacing:-.01em;
+    display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+  }
+  .wk__link{
+    font-size:.95rem;color:var(--accent);text-decoration:none;
+    line-height:1;display:inline-block;
+    transition:transform .2s,color .2s;
+  }
+  .wk__link:hover{transform:translate(2px,-2px);color:var(--accent-ink);}
+  .wk__tag{color:var(--accent);font-size:.9rem;margin-bottom:.7rem;}
+  .wk p{color:var(--soft);font-size:.9rem;margin:0;text-align:justify;}
+
+  /* ---------- contact ---------- */
+  #contact{position:relative;z-index:0;}
+  #contact::before{
+    content:"";position:absolute;
+    bottom:10%;left:-12px;width:180px;height:130px;
+    background-image:radial-gradient(circle,var(--rule-2) 1.2px,transparent 1.2px);
+    background-size:14px 14px;
+    pointer-events:none;z-index:-1;
+    -webkit-mask-image:radial-gradient(ellipse at 35% 60%,black 22%,transparent 78%);
+            mask-image:radial-gradient(ellipse at 35% 60%,black 22%,transparent 78%);
+  }
+  .contact{text-align:center;}
+  .contact .box{
+    background:var(--card);border:1px solid var(--rule);border-radius:14px;
+    padding:clamp(2rem,5vw,3rem);box-shadow:var(--shadow);
+    max-width:40rem;margin:0 auto;
+  }
+  .contact h2{font-size:1.7rem;font-weight:700;margin-bottom:.7rem;letter-spacing:-.02em;}
+  .contact p{color:var(--soft);margin-bottom:1.5rem;text-align:justify;}
+  .clinks{display:flex;justify-content:center;gap:1.4rem;margin-top:1.4rem;flex-wrap:wrap;font-size:.9rem;}
+  .clinks a{color:var(--muted);transition:color .2s;}
+  .clinks a:hover{color:var(--accent);}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--rule);padding:1.8rem 0;}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-size:.8rem;color:var(--muted);}
+  footer .mn{font-family:var(--mono);}
+
+  /* ---------- reveal animation ---------- */
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ---------- responsive ----------
+     The portrait keeps its 9/10 aspect at every viewport between mobile
+     and desktop, so the crop point and frame placement never drift. */
+  @media(max-width:760px){
+    .nl{display:none;}
+    .hero{min-height:0;display:block;}
+    .hero-content{
+      display:flex;
+      flex-direction:column-reverse;
+      gap:2rem;
+    }
+    .hero .desc{max-width:none;}
+    .photo-container{width:100%;max-width:300px;margin:0 auto;aspect-ratio:19/20;bottom:0;}
+    .cta{justify-content:center;}
+    .soc{justify-content:center;}
+    .kicker{letter-spacing:.03em;}
+    .earlier,.edu,.work{grid-template-columns:1fr;}
+  }
+  /* Tablet / semi-wide: keep the desktop two-column grid, but stop the hero
+     from being forced to viewport height — that's where the awkward empty
+     space comes from on portrait tablets. Letting min-height collapse means
+     the About section peeks in just below the hero. */
+  @media(min-width:761px) and (max-width:1024px){
+    .hero{min-height:0;}
+    .photo img {
+      min-width: 240px;
+      max-width: 250px;
+      width: 80%;
+      height: calc(100% - var(--soc-h));
+      top: calc(var(--soc-h) - 3px);
+    }
+  }
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+  }
+</style>
+</head>
+<body>
+  <nav id="nav">
+    <div class="ni">
+      <a href="#top" class="brand" aria-label="Amir Naderi — home">amir<span class="dot">.</span></a>
+      <div class="nl">
+        <a href="#about">About</a><a href="#experience">Experience</a>
+        <a href="#work">Selected Work</a><a href="#education">Education</a><a href="#contact">Contact</a>
+      </div>
+      <button class="tg" id="tg" aria-label="Toggle theme"><span class="s">☾</span><span class="m">☀</span></button>
+    </div>
+  </nav>
+
+  <main class="wrap" id="top">
+    <header class="hero">
+      <div class="hero-content">
+        <div class="reveal">
+          <h1>Amir Naderi</h1>
+          <p class="kicker">System Architect · Software Engineer · Data Scientist</p>
+          <p class="desc">I’ve spent close to a decade leading engineering teams across travel, ride-hailing, and fintech — turning legacy platforms into reliable, high-impact systems. These days I lead the pricing team at Jabama, in Tehran, and spend most of my attention on the teams behind those systems.</p>
+          <div class="cta">
+            <a class="btn btn--p" href="#contact">Get in touch</a>
+            <a class="btn btn--g" href="assets/Amir-Mohammad-Naderi-CV.pdf" target="_blank" rel="noopener">Résumé</a>
+          </div>
+          <div class="soc">
+            <a href="mailto:amir.naderi93@gmail.com" aria-label="Email"><svg viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 6l9 7 9-7"/></svg></a>
+            <a href="https://www.linkedin.com/in/amir-naderi" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="3"/><path d="M7 10v7M7 7v.01M11.5 17v-4a2.5 2.5 0 0 1 5 0v4M11.5 17v-7"/></svg></a>
+            <a href="https://github.com/amirnaderi93" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24"><path d="M9 19c-4.5 1.5-4.5-2.5-6-3m12 6v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.6 2 5.5 2.3 5.5 2.3a4.3 4.3 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 8.7c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg></a>
+            <a href="https://stackoverflow.com/users/3630128/amir" target="_blank" rel="noopener" aria-label="Stack Overflow"><svg viewBox="0 0 24 24"><path d="M17 21H5v-7M8 13.5l8 1.5M8.5 10l7.7 2.7M10 6.6l7 4M17 17.5H8"/></svg></a>
+          </div>
+        </div>
+        <div class="photo-container">
+          <div class="photo reveal"><img class="photo-light" src="assets/profile-lightmode.png" alt="Amir Naderi" /><img class="photo-dark" src="assets/profile-darkmode.png" alt="Amir Naderi" /></div>
+        </div>
+      </div>
+    </header>
+
+    <section id="about">
+      <div class="sh reveal"><i>01</i><h2>About</h2><span class="ln"></span></div>
+      <div class="about reveal">
+        <p>I’m a technical leader with close to a decade of experience leading engineering teams and rebuilding large-scale systems — across travel, ride-hailing, and fintech. My work centers on building reliable platforms, improving delivery efficiency, and keeping technology aligned with product goals.</p>
+        <p>I care about clarity, solid engineering practices, and helping teams deliver with purpose and autonomy. I solve problems across software engineering, data, and machine learning, design the solutions, and lead the teams that build them.</p>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="sh reveal"><i>02</i><h2>Experience</h2><span class="ln"></span></div>
+      <article class="tl reveal">
+        <div class="tl__top"><span class="tl__role">Pricing Team Lead · <span class="tl__org">Jabama</span></span><span class="tl__date">Apr 2025 — Present</span></div>
+        <div class="tl__dom">Online travel &amp; accommodation</div>
+        <p>Built the pricing team and architected the platform behind it. Designed and scaled the smart-pricing system — adopted by more than 10K hosts, generating roughly 60% of platform bookings, and lifting overall sales by over 10%. Developed the demand-prediction and booking-probability models that drive it.</p>
+      </article>
+      <article class="tl reveal">
+        <div class="tl__top"><span class="tl__role">Back-end Technical Team Lead · <span class="tl__org">Jabama</span></span><span class="tl__date">Dec 2024 — Apr 2025</span></div>
+        <div class="tl__dom">Online travel &amp; accommodation</div>
+        <p>Delivered the finance platform, automating contract payment calculations that had previously been manual. Designed and built the company’s experimentation platform, giving product and data teams a unified foundation for controlled experiments.</p>
+      </article>
+      <article class="tl reveal">
+        <div class="tl__top"><span class="tl__role">Back-end Team Lead · <span class="tl__org">TAPSI</span></span><span class="tl__date">Oct 2023 — Dec 2024</span></div>
+        <div class="tl__dom">Online ride-hailing</div>
+        <p>Led the pricing squad and turned the pricing service into a platform serving every product through a unified domain. Rewrote the price-calculator microservice with domain-driven design — 25% less resource use, ~2× faster feature delivery.</p>
+      </article>
+      <article class="tl reveal">
+        <div class="tl__top"><span class="tl__role">Technical Team Lead · <span class="tl__org">Pooya Co.</span></span><span class="tl__date">Oct 2018 — Oct 2023</span></div>
+        <div class="tl__dom">Banking &amp; BI solutions</div>
+        <p>Built and led a team of five, architected an extensible suite of data-intensive business-intelligence applications, and oversaw a distributed ETL system processing a billion banking-transaction records.</p>
+      </article>
+      <div class="earlier reveal">
+        <div class="echip"><div class="r">Technical Consultant &amp; Senior Developer</div><div class="m">Hitelecom Co. · 2020–2021</div></div>
+        <div class="echip"><div class="r">Co-founder &amp; Software Developer</div><div class="m">Moduland Co. · 2016–2018</div></div>
+        <div class="echip"><div class="r">Software Developer</div><div class="m">Kaveh Robot Sanat Sharif · 2015–2017</div></div>
+        <div class="echip"><div class="r">Software &amp; Embedded Designer</div><div class="m">Parsan Co. · 2015–2016</div></div>
+        <div class="echip"><div class="r">Independent work &amp; research</div><div class="m">Software &amp; robotics · 2008–2015</div></div>
+      </div>
+    </section>
+
+    <section id="work">
+      <div class="sh reveal"><i>03</i><h2>Selected Work</h2><span class="ln"></span></div>
+      <div class="work reveal">
+        <article class="wk">
+          <div class="wk__type">Framework</div>
+          <h3 class="wk__name">Conductor</h3>
+          <div class="wk__tag">A workflow framework for state-machine work.</div>
+          <p>Many of the operational jobs a data team writes are state machines underneath — sequences of conditions, actions, retries, and timers — and all of them carry the same machinery for state, logging, idempotency, and recovery from failure. The Conductor is a framework that handles that machinery, so developers focus only on the business logic of each new job. Built for Jabama’s pricing governance, designed and developed following TDD.</p>
+        </article>
+        <article class="wk">
+          <div class="wk__type">Algorithm</div>
+          <h3 class="wk__name">Price Controller</h3>
+          <div class="wk__tag">Dynamic pricing as a control-systems problem.</div>
+          <p>Designed as a closed-loop control system rather than a pure ML problem. The controller uses a PID-style loop with a conditional integral term, distribution-aware signal shaping, and bounded action sizing — control theory drawn directly from my electrical-engineering and robotics background. Pricing is usually treated as a prediction problem; here it’s treated as a control problem.</p>
+        </article>
+        <article class="wk">
+          <div class="wk__type">Open source</div>
+          <h3 class="wk__name">Pykrete <a class="wk__link" href="https://amirnaderi93.github.io/pykrete" target="_blank" rel="noopener" aria-label="Visit Pykrete site">↗</a></h3>
+          <div class="wk__tag">Static type checking for dataframe schemas.</div>
+          <p>An open-source library that brings static type checking to Python dataframes. Annotate a dataframe with its schema, and pykrete validates every column you touch — typos caught as you type, references tracked through filters, joins, and aggregations, with go-to-definition into the schema. Closes a familiar gap for data teams: the silent dataframe bug that only surfaces in production.</p>
+        </article>
+        <article class="wk">
+          <div class="wk__type">Research</div>
+          <h3 class="wk__name">GAN-based fraud-detection augmentation</h3>
+          <div class="wk__tag">Synthetic transaction data for training fraud-detection models.</div>
+          <p>For my master’s thesis: a GAN-based method for augmenting credit-card fraud-detection training data — synthesising realistic transactions to address the chronic class-imbalance problem that limits these models in practice.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="education">
+      <div class="sh reveal"><i>04</i><h2>Education</h2><span class="ln"></span></div>
+      <div class="edu reveal">
+        <div class="ed"><div class="d">2017 — 2020</div><h3>MSc, Artificial Intelligence &amp; Robotics</h3><div class="s">K. N. Toosi University of Technology</div><p class="n">Thesis: GAN-based data augmentation for fraud-detection models.</p></div>
+        <div class="ed"><div class="d">2011 — 2016</div><h3>BSc, Electronics &amp; Electrical Engineering</h3><div class="s">Amirkabir University of Technology</div><p class="n">Project: design and implementation of a Brain–Computer Interface.</p></div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="box reveal">
+        <h2>Get in touch</h2>
+        <p>Whether you’d like to talk about engineering or leadership, share an idea, or simply introduce yourself, I’d be glad to hear from you. I read every message that comes in.</p>
+        <a class="btn btn--p" href="mailto:amir.naderi93@gmail.com">amir.naderi93@gmail.com</a>
+        <div class="clinks">
+          <a href="https://www.linkedin.com/in/amir-naderi" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/amirnaderi93" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://stackoverflow.com/users/3630128/amir" target="_blank" rel="noopener">Stack Overflow</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Amir Mohammad Naderi</span>
+      <span class="mn">Tehran, Iran © <span id="y"></span></span>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent=new Date().getFullYear();
+    var root=document.documentElement;
+    document.getElementById('tg').addEventListener('click',function(){
+      var n=root.getAttribute('data-theme')==='dark'?'light':'dark';
+      root.setAttribute('data-theme',n);try{localStorage.setItem('th-slate',n);}catch(e){}
+    });
+    var nav=document.getElementById('nav');
+    addEventListener('scroll',function(){nav.classList.toggle('on',scrollY>8);},{passive:true});
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+      document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+    }else{document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');});}
+  </script>
+</body>
+</html>
